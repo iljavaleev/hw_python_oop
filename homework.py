@@ -14,8 +14,10 @@ class InfoMessage:
         self.calories = calories
 
     def get_message(self):
-        return (f'Тип тренировки: {self.training_type}; Длительность: {self.duration:.3f} ч.;'
-                f' Дистанция: {self.distance:.3f} км; Ср. скорость: {self.speed:.3f} км/ч; '
+        return (f'Тип тренировки: {self.training_type};'
+                f' Длительность: {self.duration:.3f} ч.;'
+                f' Дистанция: {self.distance:.3f} км; '
+                f'Ср. скорость: {self.speed:.3f} км/ч; '
                 f'Потрачено ккал: {self.calories:.3f}.')
 
 
@@ -53,8 +55,11 @@ class Training:
         distance = self.get_distance()
         speed = self.get_mean_speed()
         calories = self.get_spent_calories()
-        return InfoMessage(training_type=training_type, duration=duration, distance=distance,
-                           speed=speed, calories=calories)
+        return InfoMessage(training_type=training_type,
+                           duration=duration,
+                           distance=distance,
+                           speed=speed,
+                           calories=calories)
 
 
 class Running(Training):
@@ -63,9 +68,9 @@ class Running(Training):
     def get_spent_calories(self) -> float:
         coeff_calorie_1 = 18
         coeff_calorie_2 = 20
-        return (coeff_calorie_1 * self.get_mean_speed() - coeff_calorie_2) * \
-               self.weigth / self.M_IN_KM * hours_to_minutes(self.duration)
-
+        minutes = hours_to_minutes(self.duration)
+        part1 = (coeff_calorie_1 * self.get_mean_speed() - coeff_calorie_2)
+        return part1 * self.weigth / self.M_IN_KM * minutes
 
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
@@ -81,8 +86,10 @@ class SportsWalking(Training):
     def get_spent_calories(self) -> float:
         coeff_calorie_1 = 0.035
         coeff_calorie_2 = 0.029
-        return (coeff_calorie_1 * self.weigth + (self.get_mean_speed() ** 2 // self.height)
-                * coeff_calorie_2 * self.weigth) * hours_to_minutes(self.duration)
+        minutes = hours_to_minutes(self.duration)
+        part1 = (self.get_mean_speed() ** 2 // self.height)
+        return (coeff_calorie_1 * self.weigth + part1
+                * coeff_calorie_2 * self.weigth) * minutes
 
 
 class Swimming(Training):
