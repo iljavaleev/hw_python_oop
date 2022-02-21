@@ -11,14 +11,15 @@ class InfoMessage:
     distance: float
     speed: float
     calories: float
+    MESSAGE = ("Тип тренировки: {training_type}; "
+               "Длительность: {duration:.3f} ч.; "
+               "Дистанция: {distance:.3f} км; "
+               "Ср. скорость: {speed:.3f} км/ч; "
+               "Потрачено ккал: {calories:.3f}.")
 
     def get_message(self):
         """Насчет элегантности не знаю."""
-        return ("Тип тренировки: {training_type}; "
-                "Длительность: {duration:.3f} "
-                "ч.; Дистанция: {distance:.3f} км; "
-                "Ср. скорость: {speed:.3f} км/ч; "
-                "Потрачено ккал: {calories:.3f}.".format(**asdict(self)))
+        return self.MESSAGE.format(**asdict(self))
 
 
 class Training:
@@ -46,8 +47,7 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        raise NotImplementedError("Define get_spent_calories for specific "
-                                  "training")
+        raise NotImplementedError()
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
@@ -134,7 +134,8 @@ def read_package(workout_type: str, data: List[float]) -> Training:
     type_dict: Dict[str, Type[Training]] = ({'SWM': Swimming, 'RUN': Running,
                                              'WLK': SportsWalking})
     if workout_type not in type_dict:
-        raise WorkoutNotFoundException("This workout type doesn't exist")
+        raise WorkoutNotFoundException(f'This workout type {workout_type} '
+                                       f'doesn\'t exist')
     return type_dict[workout_type](*data)
 
 
